@@ -131,6 +131,7 @@ if submitted:
                 "sequence": raw_sequence,
             }
 
+           
             response = requests.post("http://backend:5000/api/genome_search_or_diagnose",json=search_or_diagnose)
             ai_response = {}
             if response.status_code == 200:
@@ -139,8 +140,6 @@ if submitted:
                 st.success("✅ Submitted successfully!")
             else:
                 st.error(response.text)
-
-            st.session_state['ai_response'] = ai_response    
             st.subheader("📋 Patient Summary")
             st.markdown(f"**Patient ID**: {patient_id}")
             st.markdown(f"**Age**: {age}")
@@ -195,7 +194,7 @@ if submitted:
 
                 if action == "Suggest Clinical Significance":
                     st.subheader("📝 Confirm Clinical Significance")
-                    confirm_submitted = ""
+
                     with st.form("confirm_significance_form"):
                         significance_response = st.radio(
                             "Do you accept the clinical significance provided by the AI?",
@@ -205,22 +204,21 @@ if submitted:
 
                         confirm_submitted = st.form_submit_button("Confirm")
 
+                        # Process the confirmation
                     if confirm_submitted:
                         print(confirm_submitted)
-                        print(st.session_state["ai_response"] )
                         clinical_significance_response = {
-                                                "decision": significance_response,
-                                                "ai_response" : st.session_state["ai_response"]    
-                                            }
+                            "decision": significance_response,
+                            "ai_response" : ai_response
+                            
+                        }
 
                         st.success(f"✅ You chose to **{significance_response}** the clinical significance.")
                         try:
                             requests.post("http://backend:5000/api/diagnosis_confirmation", json=clinical_significance_response)
                         except Exception as e:
                             st.error(f"Error contacting server: {e}")
-                            
             else:
                 st.error("No sources found in the response.")
         else:
             st.error(f"Enter missing Inputs First!")
-    # Process the confirmation
