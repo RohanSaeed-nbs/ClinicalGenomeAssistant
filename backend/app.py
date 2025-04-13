@@ -7,7 +7,6 @@ app = Flask(__name__)
 # Initialize boto3 Lambda client
 client = boto3.client('lambda', region_name='us-west-2')  # change region if needed
 
-
 @app.route('/api/genome_search_or_diagnose', methods=['POST'])
 def genome_search_or_diagnose():
     data = request.get_json()
@@ -37,7 +36,7 @@ def genome_search_or_diagnose():
 def diagnosis_confirmation():
     data = request.get_json()
     decision = data.get("decision")  
-    
+    print(data)
     ai_response = data.get("ai_response")
     if decision=="Accept":
         # Payload to send
