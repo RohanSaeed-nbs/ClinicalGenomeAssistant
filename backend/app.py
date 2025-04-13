@@ -94,7 +94,9 @@ def search():
 def genome_search_or_diagnose():
     data = request.get_json()
     action = data.get("action")
+    genome_variation = data.get("genome variation")
     history = data.get("history")
+    print(genome_variation)
     print(history)
     return jsonify(ai_response)
 

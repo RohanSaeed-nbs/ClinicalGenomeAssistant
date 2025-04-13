@@ -105,10 +105,11 @@ if submitted:
 
             search_or_diagnose = {
                 "action": action,
+                "genome variation": f"Variation: {raw_sequence}",
                 "history": history
             }
         
-            response = requests.post("http://backend:5000/api/genome_search_or_diagnose",json=search_or_diagnose)
+            response = requests.post("http://localhost:5000/api/genome_search_or_diagnose",json=search_or_diagnose)
             ai_response = {}
             if response.status_code == 200:
                 ai_response = response.json()  # Convert response to dict
