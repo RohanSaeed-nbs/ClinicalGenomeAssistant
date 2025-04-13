@@ -37,11 +37,11 @@
 
 ## Project Structure
 
-ClinicalGenomeAssistant/ 
-├── backend/  # Flask backend handling API requests 
-├── frontend/  # Streamlit frontend application 
-├── docker-compose.yml  # Docker Compose configuration 
-└── .gitignore  # Specifies intentionally untracked files to ignore
+ClinicalGenomeAssistant/   
+├── backend/  # Flask backend handling API requests   
+├── frontend/  # Streamlit frontend application   
+├── docker-compose.yml  # Docker Compose configuration   
+└── .gitignore  # Specifies intentionally untracked files to ignore  
 
 
 ## Contributing
