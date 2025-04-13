@@ -37,24 +37,29 @@ def diagnosis_confirmation():
     data = request.get_json()
     decision = data.get("decision")  
     print(data)
-    ai_response = data.get("ai_response")
+  
     if decision=="Accept":
         # Payload to send
         payload = {
-          "json":ai_response 
+          "json":data.get("ai_response")
         } 
-        
+        try:
               # Invoke Lambda
-        response = client.invoke(
+          response = client.invoke(
                 FunctionName='save-history-to-s3',  # replace with your function name
                 InvocationType='RequestResponse',  # or 'Event' for async
                 Payload=json.dumps(payload)
             )    
-   
-      # Read the response
-    ai_response = json.loads(response['Payload'].read())
-    print(ai_response)      
-    return jsonify(ai_response)
+       
+          print("error: ", e)
+            
+       # Read the response
+          ai_response = json.loads(response['Payload'].read())
+          print(ai_response) 
 
+          return jsonify(ai_response)
+        except Exception as e:
+            return e
+      
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
