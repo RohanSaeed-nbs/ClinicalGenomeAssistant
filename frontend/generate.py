@@ -108,7 +108,7 @@ if submitted:
                 "genome variation": f"Variation: {raw_sequence}",
                 "history": history
             }
-        
+
             response = requests.post("http://backend:5000/api/genome_search_or_diagnose",json=search_or_diagnose)
             ai_response = {}
             if response.status_code == 200:

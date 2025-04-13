@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+import boto3
+import json
 
 app = Flask(__name__)
 
@@ -96,8 +98,24 @@ def genome_search_or_diagnose():
     action = data.get("action")
     genome_variation = data.get("genome variation")
     history = data.get("history")
-    print(genome_variation)
-    print(history)
+  # Initialize boto3 Lambda client
+    client = boto3.client('lambda', region_name='us-west-2')  # change region if needed
+
+     # Payload to send
+    payload = {
+          "query": f"{genome_variation} identified in {history} " ,
+          "search":  True if action =="Search Genome Variation" else False
+    }    
+            # Invoke Lambda
+    response = client.invoke(
+                FunctionName='genomic-aws-agent',  # replace with your function name
+                InvocationType='RequestResponse',  # or 'Event' for async
+                Payload=json.dumps(payload)
+            )
+
+            # Read the response
+    ai_response = json.loads(response['Payload'].read())
+                
     return jsonify(ai_response)
 
 
