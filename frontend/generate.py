@@ -86,7 +86,7 @@ if submitted:
 
         if patient_id and age and family_history and symptoms:
         
-            history = f"Family History: {age} years old {ethnicity or ""}{sex or ""}. Family History of {family_history}. Symptoms include {symptoms}"
+            history = f"Family History: {age} years old {ethnicity or ''}{sex or ''}. Family History of {family_history}. Symptoms include {symptoms}"
             search_or_diagnose = {
                 "action": action,
                 "history": history
