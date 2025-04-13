@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 import re
-
+import json
 # Helper for genome variation validation (currently unused)
 def validate_and_breakdown_genome_variation(user_query):
     pattern = re.compile(r"""
@@ -153,13 +153,24 @@ if "submitted_data" in st.session_state and "ai_response" in st.session_state:
             confirm_submitted = st.form_submit_button("Confirm")
 
         if confirm_submitted:
-            confirm_payload = {
-                "decision": significance_response,
-                "ai_response": ai_response
-            }
-
             try:
-                requests.post("http://backend:5000/api/diagnosis_confirmation", json=confirm_payload)
-                st.success(f"✅ You chose to **{significance_response}** the clinical significance.")
+                # Use .copy() to avoid mutation issues and ensure clean serialization
+                confirm_payload = {
+                    "decision": significance_response,
+                    "ai_response": json.loads(json.dumps(ai_response)),  # Ensures serialization
+                    "submitted_data": json.loads(json.dumps(st.session_state.get("submitted_data", {})))
+                }
+
+                response = requests.post(
+                    "http://backend:5000/api/diagnosis_confirmation",
+                    json=confirm_payload,
+                    headers={"Content-Type": "application/json"}
+                )
+
+                if response.status_code == 200:
+                    st.success(f"✅ You chose to **{significance_response}** the clinical significance.")
+                else:
+                    st.error(f"❌ Backend responded with {response.status_code}: {response.text}")
+
             except Exception as e:
                 st.error(f"Failed to send confirmation: {e}")
