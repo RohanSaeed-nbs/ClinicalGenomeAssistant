@@ -14,3 +14,11 @@ services:
     ports:
       - "8501:8501"
     container_name: streamlit-frontend
+    depends_on:
+      - backend  # Simplified depends_on without condition
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
