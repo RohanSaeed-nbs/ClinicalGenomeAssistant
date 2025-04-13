@@ -69,7 +69,7 @@ with st.form("patient_form"):
 
     st.header("🧬 Genetic Data Input")
     raw_sequence = st.text_area("Input Genome Variation in HVGS Format")
-    sequence_valid = validate_and_breakdown_genome_variation(raw_sequence)
+    sequence_valid = raw_sequence   #validate_and_breakdown_genome_variation(raw_sequence)
     st.divider()
 
     st.header("⚙️ Choose Action")
@@ -145,24 +145,26 @@ if submitted:
                 st.markdown(ai_response["patient_history"])
 
             st.subheader("📚 Sources")
+
             if "Sources" in ai_response:
-                for source in ai_response["Sources"]:
-                    st.markdown(f"**Source**: {source['source']}")
-                    st.markdown(f"**ID**: {source['id']}")
-                    st.markdown(f"**Summary**: {source['text']}")
+                for source in ai_response.get("Sources",''):
+                    print("INSIDE FORloop==>", source)
+                    st.markdown(f"**Source**: {source.get('source','')}")
+                    st.markdown(f"**ID**: {source.get('id','')}")
+                    st.markdown(f"**Summary**: {source.get('text','')}")
 
-                    meta = source["metadata"]
+                    meta = source.get("metadata", '')
                     with st.expander("🔎 **See Metadata**"):
-                        st.markdown(f"**Gene**: {meta['GeneSymbol']}")
-                        st.markdown(f"**Type**: {meta['Type']}")
-                        st.markdown(f"**Clinical Significance**: {meta['ClinicalSignificance']}")
-                        st.markdown(f"**Phenotypes**: {', '.join(meta['PhenotypeList'])}")
-                        st.markdown(f"**Review Status**: {meta['ReviewStatus']}")
-                        st.markdown(f"**Assembly**: {meta['Assembly']}")
-                        st.markdown(f"**Location**: Chr{meta['Chromosome']}:{meta['Start']}-{meta['Stop']}")
-                        st.markdown(f"**Ref/Alt**: {meta['ReferenceAllele']} → {meta['AlternateAllele']}")
-
+                        st.markdown(f"**Gene**: {meta.get('GeneSymbol','')}")
+                        st.markdown(f"**Type**: {meta.get('Type','')}")
+                        st.markdown(f"**Clinical Significance**: {meta.get('ClinicalSignificance','')}")
+                        st.markdown(f"**Phenotypes**: {', '.join(meta.get('PhenotypeList',''))}")
+                        st.markdown(f"**Review Status**: {meta.get('ReviewStatus','')}")
+                        st.markdown(f"**Assembly**: {meta.get('Assembly','')}")
+                        st.markdown(f"**Location**: Chr{meta.get('Chromosome','')}:{meta.get('Start','')}-{meta.get('Stop','')}")
+                        st.markdown(f"**Ref/Alt**: {meta.get('ReferenceAllele','')} → {meta.get('AlternateAllele','')}")
                     st.divider()
+
                 if action == "Suggest Clinical Significance":
                     st.subheader("📝 Confirm Clinical Significance")
 
