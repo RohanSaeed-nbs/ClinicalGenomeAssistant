@@ -86,13 +86,29 @@ if submitted:
 
         if patient_id and age and family_history and symptoms:
         
-            history = f"Family History: {age} years old {ethnicity or ''}{sex or ''}. Family History of {family_history}. Symptoms include {symptoms}"
+            history = ""
+
+            age_str= f"Family History: {age} years old {ethnicity or ''} {sex or ''}."
+            history_str = ""
+            symptoms_str = ""
+            if family_history == "None":
+                history_str  = ""
+            else:   
+                history_str = f"Family History of {family_history}" 
+
+            if symptoms =="None":
+                symptoms_str = ""
+            else:    
+                symptoms_str = f"Symptoms include {symptoms}"
+
+            history = age_str+history_str+symptoms_str
+
             search_or_diagnose = {
                 "action": action,
                 "history": history
             }
         
-            response = requests.post("http://backend:5000/api/genome_search_or_diagnose")
+            response = requests.post("http://backend:5000/api/genome_search_or_diagnose",json=search_or_diagnose)
             ai_response = {}
             if response.status_code == 200:
                 ai_response = response.json()  # Convert response to dict
@@ -128,47 +144,49 @@ if submitted:
                 st.markdown(ai_response["patient_history"])
 
             st.subheader("📚 Sources")
-            for source in ai_response["Sources"]:
-                st.markdown(f"**Source**: {source['source']}")
-                st.markdown(f"**ID**: {source['id']}")
-                st.markdown(f"**Summary**: {source['text']}")
+            if "Sources" in ai_response:
+                for source in ai_response["Sources"]:
+                    st.markdown(f"**Source**: {source['source']}")
+                    st.markdown(f"**ID**: {source['id']}")
+                    st.markdown(f"**Summary**: {source['text']}")
 
-                meta = source["metadata"]
-                with st.expander("🔎 **See Metadata**"):
-                    st.markdown(f"**Gene**: {meta['GeneSymbol']}")
-                    st.markdown(f"**Type**: {meta['Type']}")
-                    st.markdown(f"**Clinical Significance**: {meta['ClinicalSignificance']}")
-                    st.markdown(f"**Phenotypes**: {', '.join(meta['PhenotypeList'])}")
-                    st.markdown(f"**Review Status**: {meta['ReviewStatus']}")
-                    st.markdown(f"**Assembly**: {meta['Assembly']}")
-                    st.markdown(f"**Location**: Chr{meta['Chromosome']}:{meta['Start']}-{meta['Stop']}")
-                    st.markdown(f"**Ref/Alt**: {meta['ReferenceAllele']} → {meta['AlternateAllele']}")
+                    meta = source["metadata"]
+                    with st.expander("🔎 **See Metadata**"):
+                        st.markdown(f"**Gene**: {meta['GeneSymbol']}")
+                        st.markdown(f"**Type**: {meta['Type']}")
+                        st.markdown(f"**Clinical Significance**: {meta['ClinicalSignificance']}")
+                        st.markdown(f"**Phenotypes**: {', '.join(meta['PhenotypeList'])}")
+                        st.markdown(f"**Review Status**: {meta['ReviewStatus']}")
+                        st.markdown(f"**Assembly**: {meta['Assembly']}")
+                        st.markdown(f"**Location**: Chr{meta['Chromosome']}:{meta['Start']}-{meta['Stop']}")
+                        st.markdown(f"**Ref/Alt**: {meta['ReferenceAllele']} → {meta['AlternateAllele']}")
 
-                st.divider()
-            if action == "Suggest Clinical Significance":
-                st.subheader("📝 Confirm Clinical Significance")
+                    st.divider()
+                if action == "Suggest Clinical Significance":
+                    st.subheader("📝 Confirm Clinical Significance")
 
-                with st.form("confirm_significance_form"):
-                    significance_response = st.radio(
-                        "Do you accept the clinical significance provided by the AI?",
-                        ["Accept", "Decline"],
-                        horizontal=True
-                )
+                    with st.form("confirm_significance_form"):
+                        significance_response = st.radio(
+                            "Do you accept the clinical significance provided by the AI?",
+                            ["Accept", "Decline"],
+                            horizontal=True
+                    )
 
 
-                    confirm_submitted = st.form_submit_button("Confirm")
+                        confirm_submitted = st.form_submit_button("Confirm")
 
-                    # Process the confirmation
-                if confirm_submitted:
-                    print(confirm_submitted)
-                    clinical_significance_response = {
-                        "decision": significance_response
-                    }
+                        # Process the confirmation
+                    if confirm_submitted:
+                        print(confirm_submitted)
+                        clinical_significance_response = {
+                            "decision": significance_response
+                        }
 
-                    st.success(f"✅ You chose to **{significance_response}** the clinical significance.")
-                    requests.post("http://backend:5000/api/diagnosis_confirmation", json=clinical_significance_response)
-    
-
+                        st.success(f"✅ You chose to **{significance_response}** the clinical significance.")
+                        requests.post("http://backend:5000/api/diagnosis_confirmation", json=clinical_significance_response)
+            
+            else:
+                st.error("No sources found in the response.")
         else:
             st.error(f"Enter missing Inputs First!")
 
