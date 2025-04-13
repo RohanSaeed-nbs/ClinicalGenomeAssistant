@@ -57,7 +57,7 @@ with st.form("patient_form"):
     st.header("🔹 Patient Information")
     col1, col2 = st.columns(2)
     with col1:
-        patient_id = st.text_input("Patient Id")
+        patient_id = st.text_input("Case Id")
         age = st.text_input("Age")
         ethnicity = st.text_input("Ethnicity (optional)")
     with col2:
@@ -92,7 +92,7 @@ if submitted:
                 "history": history
             }
         
-            response = requests.post("http://backend:5000/api/genome_search_or_diagnose")
+            response = requests.get("http://backend:5000/api/genome_search_or_diagnose")
             ai_response = {}
             if response.status_code == 200:
                 ai_response = response.json()  # Convert response to dict
