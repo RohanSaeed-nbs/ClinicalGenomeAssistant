@@ -38,8 +38,9 @@ def diagnosis_confirmation():
     try:
         data = request.get_json()
         decision = data.get("decision")
+        print("=====================")
         print("Received data:", data)
-
+        print("======================")
         if decision == "Accept":
             # Payload to send
             payload = {
