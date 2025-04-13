@@ -1,6 +1,4 @@
 import streamlit as st
-import pandas as pd
-from io import StringIO
 import requests
 
 st.set_page_config(page_title="Genomics AI Assistant", layout="centered")
@@ -68,13 +66,6 @@ if submitted:
     st.subheader("🧬 Genetic Input")
     if input_type == "Paste Sequence":
         st.code(raw_sequence[:500] + ("..." if len(raw_sequence) > 500 else ""), language="text")
-
-    elif input_type == "Enter Variants":
-        try:
-            variants_df = pd.read_csv(StringIO(variants_csv))
-            st.dataframe(variants_df)
-        except Exception as e:
-            st.error("❌ Invalid CSV input. Please format it correctly.")
 
     else:
         if uploaded_file:
