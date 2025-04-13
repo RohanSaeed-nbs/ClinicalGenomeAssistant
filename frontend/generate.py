@@ -154,15 +154,16 @@ if submitted:
                     st.markdown(f"**Summary**: {source.get('text','')}")
 
                     meta = source.get("metadata", '')
-                    with st.expander("🔎 **See Metadata**"):
-                        st.markdown(f"**Gene**: {meta.get('GeneSymbol','')}")
-                        st.markdown(f"**Type**: {meta.get('Type','')}")
-                        st.markdown(f"**Clinical Significance**: {meta.get('ClinicalSignificance','')}")
-                        st.markdown(f"**Phenotypes**: {', '.join(meta.get('PhenotypeList',''))}")
-                        st.markdown(f"**Review Status**: {meta.get('ReviewStatus','')}")
-                        st.markdown(f"**Assembly**: {meta.get('Assembly','')}")
-                        st.markdown(f"**Location**: Chr{meta.get('Chromosome','')}:{meta.get('Start','')}-{meta.get('Stop','')}")
-                        st.markdown(f"**Ref/Alt**: {meta.get('ReferenceAllele','')} → {meta.get('AlternateAllele','')}")
+                    if meta:
+                        with st.expander("🔎 **See Metadata**"):
+                            st.markdown(f"**Gene**: {meta.get('GeneSymbol','')}")
+                            st.markdown(f"**Type**: {meta.get('Type','')}")
+                            st.markdown(f"**Clinical Significance**: {meta.get('ClinicalSignificance','')}")
+                            st.markdown(f"**Phenotypes**: {', '.join(meta.get('PhenotypeList',''))}")
+                            st.markdown(f"**Review Status**: {meta.get('ReviewStatus','')}")
+                            st.markdown(f"**Assembly**: {meta.get('Assembly','')}")
+                            st.markdown(f"**Location**: Chr{meta.get('Chromosome','')}:{meta.get('Start','')}-{meta.get('Stop','')}")
+                            st.markdown(f"**Ref/Alt**: {meta.get('ReferenceAllele','')} → {meta.get('AlternateAllele','')}")
                     st.divider()
 
                 if action == "Suggest Clinical Significance":
