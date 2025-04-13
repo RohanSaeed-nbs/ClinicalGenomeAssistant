@@ -37,6 +37,7 @@ def genome_search_or_diagnose():
 def diagnosis_confirmation():
     data = request.get_json()
     decision = data.get("decision")  
+    
     ai_response = data.get("ai_response")
     if decision=="Accept":
         # Payload to send
