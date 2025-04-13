@@ -54,7 +54,7 @@ st.set_page_config(page_title="Genomics AI Assistant", layout="centered")
 st.title("🧬 Clinical Genomics AI Assistant")
 
 with st.form("patient_form"):
-    st.header("🔹 Patient Information")
+    st.header("1. Patient Information")
     col1, col2 = st.columns(2)
     with col1:
         patient_id = st.text_input("Case Id")
@@ -67,16 +67,16 @@ with st.form("patient_form"):
 
     st.divider()
 
-    st.header("🧬 Genetic Data Input")
+    st.header("2. Genetic Data Input")
     raw_sequence = st.text_area("Input Genome Variation in HVGS Format")
     sequence_valid = raw_sequence   #validate_and_breakdown_genome_variation(raw_sequence)
     st.divider()
 
-    st.header("⚙️ Choose Action")
+    st.header("3. Choose Action")
     action = st.radio("What do you want the AI to do?", ["Search Genome Variation", "Suggest Clinical Significance"])
 
   
-    submitted = st.form_submit_button("Submit")
+    submitted = st.form_submit_button("Submit",use_container_width=True)
 
 #  Post-submit logic outside the form
 if submitted:
@@ -157,7 +157,7 @@ if submitted:
                         meta = source.get("metadata", '')
                         if isinstance(meta, dict):
                  
-                            with st.expander("🔎 **See Metadata**"):
+                            with st.expander("**See Metadata**", expanded=True):
                                 st.markdown(f"**Gene**: {meta.get('GeneSymbol','')}")
                                 st.markdown(f"**Type**: {meta.get('Type','')}")
                                 st.markdown(f"**Clinical Significance**: {meta.get('ClinicalSignificance','')}")
